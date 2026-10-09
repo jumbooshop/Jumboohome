@@ -12,28 +12,6 @@
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Supabase JS CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Mali', 'cursive', 'sans-serif'],
-                    },
-                    colors: {
-                        'brand-bg': '#FCF9F2',
-                        'brand-yellow': '#F4C760',
-                        'brand-yellow-soft': '#FDF3D8',
-                        'brand-brown': '#543B32',
-                        'brand-brown-light': '#8C746B',
-                    }
-                }
-            }
-        }
-    </script>
 
     <style>
         body {
@@ -99,25 +77,25 @@
     <!-- แถบปุ่มด้านบนมุมขวา -->
     <div class="w-full max-w-xl flex justify-end gap-2.5 mb-4 relative z-20">
         <!-- ปุ่มเปิด/ปิดเพลง -->
-        <button id="toggleAudioBtn" onclick="toggleAudio()" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white border border-[#E8DCC4] shadow-sm flex items-center gap-1.5 text-brand-brown hover:bg-brand-yellow-soft transition">
+        <button id="toggleAudioBtn" onclick="toggleAudio()" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white border border-[#E8DCC4] shadow-sm flex items-center gap-1.5 text-[#543B32] hover:bg-[#FDF3D8] transition">
             <span id="audioIcon">🔈</span>
             <span id="audioText">เปิดเพลง</span>
         </button>
 
         <!-- ปุ่มจัดการร้าน -->
-        <button onclick="openAdminModal()" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white border border-[#E8DCC4] shadow-sm flex items-center gap-1.5 text-brand-brown hover:bg-brand-yellow-soft transition">
+        <button onclick="alert('จัดการข้อมูลร้านผ่าน Supabase Dashboard')" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white border border-[#E8DCC4] shadow-sm flex items-center gap-1.5 text-[#543B32] hover:bg-[#FDF3D8] transition">
             <span>⚙️</span>
             <span>จัดการร้าน</span>
         </button>
     </div>
 
-    <!-- การ์ดหน้าร้านหลักตามแบบเดิมเป๊ะ -->
-    <main class="w-full max-w-lg main-card p-8 sm:p-10 text-center relative z-10 my-auto">
+    <!-- การ์ดหน้าร้านหลัก แสดงทันที ไม่ต้องรอโหลด และไม่ซ่อน -->
+    <main id="mainShopCard" class="w-full max-w-lg main-card p-8 sm:p-10 text-center relative z-10 my-auto block">
         
         <!-- รูปโลโก้ประจำร้านทรงกลม -->
         <div class="relative w-28 h-28 mx-auto mb-5">
             <div id="logoWrapper" class="w-full h-full rounded-full bg-[#F5C767] flex items-center justify-center text-white text-5xl font-bold shadow-inner overflow-hidden">
-                <img id="shopLogo" src="" alt="Logo" class="w-full h-full object-cover hidden" onerror="fallbackLogo()">
+                <img id="shopLogo" src="" alt="Logo" class="w-full h-full object-cover hidden">
                 <span id="shopLogoFallback">J</span>
             </div>
         </div>
@@ -139,23 +117,23 @@
 
         <!-- เมนูหลัก 4 ปุ่ม เรียงจากบนลงล่าง -->
         <div class="space-y-4 mb-8">
-            <!-- 1. วิธีสั่งซื้อ (อยู่บนสุด ขอบมน สีขาวขอบเหลืองอ่อน) -->
-            <a id="btnHowTo" href="#" target="_blank" class="btn-action block w-full py-4 px-6 rounded-full bg-white border-2 border-[#EAD7B5] text-[#543B32] font-bold text-base shadow-sm">
+            <!-- 1. วิธีสั่งซื้อ (อยู่บนสุด) -->
+            <a id="btnHowTo" href="javascript:void(0);" onclick="showToast('กำลังจัดเตรียมขั้นตอนวิธีสั่งซื้อค่ะ 📖')" class="btn-action block w-full py-4 px-6 rounded-full bg-white border-2 border-[#EAD7B5] text-[#543B32] font-bold text-base shadow-sm">
                 📖 วิธีสั่งซื้อ
             </a>
 
-            <!-- 2. สั่งซื้อ / เช็คคิว (สีเหลืองทองโดดเด่น) -->
-            <a id="btnOrder" href="#" target="_blank" class="btn-action block w-full py-4 px-6 rounded-full bg-[#F5C767] text-[#543B32] font-bold text-base shadow-md">
+            <!-- 2. สั่งซื้อ / เช็คคิว (สีเหลืองทอง) -->
+            <a id="btnOrder" href="javascript:void(0);" onclick="showToast('กำลังเปิดระบบสั่งซื้อ / เช็คคิว 🛍️')" class="btn-action block w-full py-4 px-6 rounded-full bg-[#F5C767] text-[#543B32] font-bold text-base shadow-md">
                 🛍️ สั่งซื้อ / เช็คคิว
             </a>
 
             <!-- 3. แจ้งโอนเงิน -->
-            <a id="btnPayment" href="#" target="_blank" class="btn-action block w-full py-4 px-6 rounded-full bg-white border-2 border-[#EAD7B5] text-[#543B32] font-bold text-base shadow-sm">
+            <a id="btnPayment" href="javascript:void(0);" onclick="showToast('กำลังเปิดระบบแจ้งโอนเงิน 💳')" class="btn-action block w-full py-4 px-6 rounded-full bg-white border-2 border-[#EAD7B5] text-[#543B32] font-bold text-base shadow-sm">
                 💳 แจ้งโอนเงิน
             </a>
 
             <!-- 4. เช็คเครดิต / สะสมแต้ม -->
-            <a id="btnCredit" href="#" target="_blank" class="btn-action block w-full py-4 px-6 rounded-full bg-white border-2 border-[#EAD7B5] text-[#543B32] font-bold text-base shadow-sm">
+            <a id="btnCredit" href="javascript:void(0);" onclick="showToast('กำลังเปิดระบบเช็คเครดิต ⭐')" class="btn-action block w-full py-4 px-6 rounded-full bg-white border-2 border-[#EAD7B5] text-[#543B32] font-bold text-base shadow-sm">
                 ⭐ เช็คเครดิต / สะสมแต้ม
             </a>
         </div>
@@ -167,10 +145,10 @@
         </div>
     </main>
 
-    <!-- Toast แจ้งเตือนน่ารักๆ -->
+    <!-- กล่องแจ้งเตือน Toast -->
     <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#543B32] text-white px-5 py-2.5 rounded-full text-xs font-semibold shadow-lg transition-all opacity-0 pointer-events-none z-50 flex items-center gap-2">
         <span id="toastIcon">✨</span>
-        <span id="toastMsg">พร้อมใช้งาน</span>
+        <span id="toastMsg">ข้อความ</span>
     </div>
 
     <!-- ไฟล์เสียงเพลง -->
@@ -179,34 +157,6 @@
     </audio>
 
     <script>
-        const SUPABASE_URL = "https://jrfanayurvkidnrpfoqo.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpyZmFuYXl1cnZraWRucnBmb3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0MDI5ODQsImV4cCI6MjEwNTk3ODk4NH0.P7W3COXaplyt8_FwtgAebd_TVRVddzoeZtEJp1cb7Qw";
-
-        let supabase = null;
-        try {
-            if (window.supabase) {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            }
-        } catch (e) {
-            console.log("Supabase initial skipped");
-        }
-
-        // ข้อมูลตั้งต้นตามแบบภาพเดิม
-        const initialData = {
-            shop_name: "JUMBOOSHOP",
-            shop_sub: "ระบบแนะนำร้านค้าและสั่งซื้อสินค้า",
-            desc1: "สวัสดีค่าา ยินดีต้อนรับเข้าสู่ร้าน JUMBOOSHOP นะคะ 🐘✨",
-            desc2: "แม่ค้าชื่อ \"จัมโบ้\" ค่ะ ใจดี ถามได้ตลอดเลยน้า",
-            hours: "เปิดให้บริการทุกวัน | ตัดรอบส่งของ 15.00 น.",
-            logo: "",
-            btn_howto: "#",
-            btn_order: "#",
-            btn_payment: "#",
-            btn_credit: "#",
-            line_text: "@655ayoko",
-            line_url: "https://line.me/R/ti/p/@655ayoko"
-        };
-
         function showToast(msg, icon = "✨") {
             const toast = document.getElementById('toast');
             document.getElementById('toastMsg').textContent = msg;
@@ -219,83 +169,7 @@
             }, 3000);
         }
 
-        function setButtonAction(id, url) {
-            const el = document.getElementById(id);
-            if (!url || url === '#' || url.trim() === '') {
-                el.href = "javascript:void(0);";
-                el.onclick = (e) => {
-                    e.preventDefault();
-                    showToast("ปุ่มนี้กำลังรอแอดมินตั้งค่าลิงก์ค่ะ 💖", "📌");
-                };
-            } else {
-                el.href = url;
-                el.onclick = null;
-            }
-        }
-
-        function renderData(data) {
-            document.getElementById('shopName').textContent = data.shop_name || initialData.shop_name;
-            document.getElementById('shopSub').textContent = data.shop_sub || initialData.shop_sub;
-            document.getElementById('shopDesc1').textContent = data.desc1 || initialData.desc1;
-            document.getElementById('shopDesc2').textContent = data.desc2 || initialData.desc2;
-            document.getElementById('shopHours').textContent = data.hours || initialData.hours;
-            
-            if (data.logo) {
-                const img = document.getElementById('shopLogo');
-                img.src = data.logo;
-                img.classList.remove('hidden');
-                document.getElementById('shopLogoFallback').classList.add('hidden');
-            }
-
-            setButtonAction('btnHowTo', data.btn_howto);
-            setButtonAction('btnOrder', data.btn_order);
-            setButtonAction('btnPayment', data.btn_payment);
-            setButtonAction('btnCredit', data.btn_credit);
-
-            if (data.line_text) document.getElementById('lineLink').textContent = data.line_text;
-            if (data.line_url) document.getElementById('lineLink').href = data.line_url;
-        }
-
-        function fallbackLogo() {
-            document.getElementById('shopLogo').classList.add('hidden');
-            document.getElementById('shopLogoFallback').classList.remove('hidden');
-        }
-
-        // ดึงข้อมูลจากฐานข้อมูลแบบ Safe Mode (หากล้มเหลวจะใช้ข้อมูลเดิมทันที ไม่หยุดทำงาน)
-        async function fetchShopData() {
-            renderData(initialData);
-
-            if (!supabase) return;
-
-            try {
-                const { data, error } = await supabase
-                    .from('shop_settings')
-                    .select('*')
-                    .limit(1)
-                    .maybeSingle();
-
-                if (!error && data) {
-                    renderData({
-                        shop_name: data.shop_name,
-                        shop_sub: data.shop_sub || initialData.shop_sub,
-                        desc1: data.welcome_message || initialData.desc1,
-                        desc2: data.about_message || initialData.desc2,
-                        hours: data.business_hours || initialData.hours,
-                        logo: data.shop_image,
-                        btn_howto: data.btn_howto_link,
-                        btn_order: data.btn_order_link,
-                        btn_payment: data.btn_payment_link,
-                        btn_credit: data.btn_credit_link,
-                        line_text: data.line_contact,
-                        line_url: data.line_link
-                    });
-                }
-            } catch (err) {
-                console.warn("Offline/Network issue, used default layout:", err);
-            }
-        }
-
-        // ควบคุมระบบเล่นเพลง
+        // ระบบเปิด/ปิดเพลง
         let isPlaying = false;
         function toggleAudio() {
             const audio = document.getElementById('bgMusic');
@@ -309,8 +183,7 @@
                     text.textContent = "ปิดเพลง";
                     showToast("กำลังเล่นเพลง Sunlight On The Threshold 🎶", "🎵");
                 }).catch(err => {
-                    console.log("Playback error:", err);
-                    showToast("แตะที่หน้าจออีกครั้งเพื่อเริ่มเล่นเพลงนะคะ", "🎶");
+                    showToast("แตะหน้าจออีก 1 ครั้งเพื่อเปิดเพลงนะคะ", "🎶");
                 });
             } else {
                 audio.pause();
@@ -321,16 +194,12 @@
             }
         }
 
-        function openAdminModal() {
-            showToast("เปิดหน้าจัดการผ่านหลังบ้าน Supabase ค่ะ", "⚙️");
-        }
-
-        // เศษละอองตกแต่งลอยฟรุ้งฟริ้ง
+        // เอฟเฟกต์ตกแต่งร่วงหล่น
         function initSnow() {
             const symbols = ['✦', '•', '+', '★', '✿'];
             setInterval(() => {
                 const snow = document.createElement('div');
-                snow.className = 'snow-particle text-brand-yellow/50 font-bold';
+                snow.className = 'snow-particle text-[#F4C760] font-bold opacity-60';
                 snow.textContent = symbols[Math.floor(Math.random() * symbols.length)];
                 snow.style.left = Math.random() * 100 + 'vw';
                 snow.style.fontSize = (Math.random() * 8 + 8) + 'px';
@@ -341,7 +210,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            fetchShopData();
             initSnow();
         });
     </script>
