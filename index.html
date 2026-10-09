@@ -4,66 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JUMBOOSHOP</title>
-    
     <!-- Google Fonts: Mali -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Supabase JS CDN -->
+    <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    colors: {
+                        cream: '#FCF9F2',
+                        'cream-card': '#FFFFFF',
+                        'yellow-soft': '#FDF3D8',
+                        'yellow-earth': '#F4C760',
+                        'yellow-earth-hover': '#E0B44C',
+                        'brown-dark': '#543B32',
+                        'brown-light': '#8C746B',
+                        'line-green': '#06C755'
+                    },
                     fontFamily: {
                         sans: ['Mali', 'cursive', 'sans-serif'],
                     },
-                    colors: {
-                        'brand-bg': '#FCF9F2',
-                        'brand-yellow': '#F4C760',
-                        'brand-yellow-soft': '#FDF3D8',
-                        'brand-brown': '#543B32',
-                        'brand-brown-light': '#8C746B',
+                    boxShadow: {
+                        'soft': '0 20px 40px -15px rgba(84, 59, 50, 0.07)',
+                        'button': '0 4px 14px 0 rgba(244, 199, 96, 0.35)',
                     }
                 }
             }
         }
     </script>
-
     <style>
         body {
             background-color: #FCF9F2;
-            color: #543B32;
             background-image: radial-gradient(#F4C760 1.2px, transparent 1.2px);
-            background-size: 28px 28px;
+            background-size: 24px 24px;
+            color: #543B32;
             font-family: 'Mali', cursive, sans-serif;
             min-height: 100vh;
-            margin: 0;
-            overflow-x: hidden;
         }
 
         .ambient-glow {
             position: fixed;
-            top: 20%;
-            left: 20%;
-            width: 380px;
-            height: 380px;
-            background: radial-gradient(circle, rgba(244, 199, 96, 0.35) 0%, rgba(252, 249, 242, 0) 70%);
-            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(244, 199, 96, 0.25) 0%, rgba(252, 249, 242, 0) 70%);
             pointer-events: none;
             z-index: 0;
-            filter: blur(40px);
-        }
-
-        .main-card {
-            background: #FFFFFF;
-            border-radius: 40px;
-            box-shadow: 0 20px 50px rgba(244, 199, 96, 0.15), 0 4px 20px rgba(84, 59, 50, 0.04);
         }
 
         .snow-particle {
@@ -71,599 +64,59 @@
             top: -20px;
             pointer-events: none;
             z-index: 1;
+            user-select: none;
             animation: fall linear forwards;
         }
 
         @keyframes fall {
-            0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
-            100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+            0% {
+                transform: translateY(0) rotate(0deg) translateX(0);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(50vh) rotate(180deg) translateX(15px);
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(105vh) rotate(360deg) translateX(-15px);
+                opacity: 0;
+            }
         }
 
-        .btn-action {
-            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        .modal-backdrop {
+            background-color: rgba(84, 59, 50, 0.4);
+            backdrop-filter: blur(4px);
         }
-        .btn-action:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(244, 199, 96, 0.35);
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
         }
-        .btn-action:active {
-            transform: translateY(1px);
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #FCF9F2;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #F4C760;
+            border-radius: 10px;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-<body class="relative flex flex-col items-center justify-start min-h-screen py-6 px-4">
+<body class="relative flex flex-col justify-between items-center min-h-screen p-4 sm:p-6 overflow-x-hidden selection:bg-yellow-soft selection:text-brown-dark">
 
-    <!-- แสงเรืองรองนวลๆ -->
     <div class="ambient-glow"></div>
 
-    <!-- แถบปุ่มด้านบนมุมขวา -->
-    <div class="w-full max-w-xl flex justify-end gap-2.5 mb-4 relative z-20">
-        <!-- ปุ่มเปิด/ปิดเพลง -->
-        <button id="toggleAudioBtn" onclick="toggleAudio()" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white border border-[#E8DCC4] shadow-sm flex items-center gap-1.5 text-brand-brown hover:bg-brand-yellow-soft transition">
-            <span id="audioIcon">🔈</span>
-            <span id="audioText">เปิดเพลง</span>
-        </button>
-
-        <!-- ปุ่มจัดการร้าน -->
-        <button onclick="handleAdminClick()" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white border border-[#E8DCC4] shadow-sm flex items-center gap-1.5 text-brand-brown hover:bg-brand-yellow-soft transition">
-            <span>⚙️</span>
-            <span>จัดการร้าน</span>
-        </button>
-    </div>
-
-    <!-- การ์ดหน้าร้านหลัก -->
-    <main id="mainShopCard" class="w-full max-w-lg main-card p-8 sm:p-10 text-center relative z-10 my-auto">
-        
-        <!-- รูปโลโก้ประจำร้านทรงกลม -->
-        <div class="relative w-28 h-28 mx-auto mb-5">
-            <div id="logoWrapper" class="w-full h-full rounded-full bg-[#F5C767] flex items-center justify-center text-white text-5xl font-bold shadow-inner overflow-hidden border-4 border-[#FDF3D8]">
-                <img id="shopLogo" src="" alt="Logo" class="w-full h-full object-cover hidden" onerror="fallbackLogo()">
-                <span id="shopLogoFallback">J</span>
-            </div>
-        </div>
-
-        <!-- ชื่อร้าน -->
-        <h1 id="shopName" class="text-3xl font-extrabold text-[#4A3228] tracking-wide mb-1">JUMBOOSHOP</h1>
-        
-        <!-- คำโปรยใต้ชื่อร้าน -->
-        <p id="shopSub" class="text-sm font-semibold text-[#8C746B] mb-6">ระบบแนะนำร้านค้าและสั่งซื้อสินค้า</p>
-
-        <!-- กล่องข้อความแนะนำตัว/ต้อนรับ -->
-        <div class="bg-[#FCF9F2] border border-[#EBDCC4] rounded-2xl p-4 mb-4 text-[#543B32] text-xs sm:text-sm leading-relaxed">
-            <p id="shopDesc1" class="font-medium">สวัสดีค่าา ยินดีต้อนรับเข้าสู่ร้าน JUMBOOSHOP นะคะ 🐘✨</p>
-            <p id="shopDesc2" class="font-medium mt-1">แม่ค้าชื่อ "จัมโบ้" ค่ะ ใจดี ถามได้ตลอดเลยน้า</p>
-        </div>
-
-        <!-- เวลาทำการ -->
-        <p id="shopHours" class="text-[11px] text-[#8C746B] font-medium mb-7">เปิดให้บริการทุกวัน | ตัดรอบส่งของ 15.00 น.</p>
-
-        <!-- เมนูหลัก 4 ปุ่ม เรียงจากบนลงล่าง -->
-        <div class="space-y-4 mb-8">
-            <!-- 1. วิธีสั่งซื้อ (อยู่บนสุด) -->
-            <a id="btnHowTo" href="#" target="_blank" class="btn-action block w-full py-4 px-6 rounded-full bg-white border-2 border-[#EAD7B5] text-[#543B32] font-bold text-base shadow-sm">
-                📖 วิธีสั่งซื้อ
-            </a>
-
-            <!-- 2. สั่งซื้อ / เช็คคิว (สีเหลืองทอง) -->
-            <a id="btnOrder" href="#" target="_blank" class="btn-action block w-full py-4 px-6 rounded-full bg-[#F5C767] text-[#543B32] font-bold text-base shadow-md">
-                🛍️ สั่งซื้อ / เช็คคิว
-            </a>
-
-            <!-- 3. แจ้งโอนเงิน -->
-            <a id="btnPayment" href="#" target="_blank" class="btn-action block w-full py-4 px-6 rounded-full bg-white border-2 border-[#EAD7B5] text-[#543B32] font-bold text-base shadow-sm">
-                💳 แจ้งโอนเงิน
-            </a>
-
-            <!-- 4. เช็คเครดิต / สะสมแต้ม -->
-            <a id="btnCredit" href="#" target="_blank" class="btn-action block w-full py-4 px-6 rounded-full bg-white border-2 border-[#EAD7B5] text-[#543B32] font-bold text-base shadow-sm">
-                ⭐ เช็คเครดิต / สะสมแต้ม
-            </a>
-        </div>
-
-        <!-- ส่วนติดต่อด้านล่าง -->
-        <div class="text-xs text-[#8C746B] font-medium flex items-center justify-center gap-1.5">
-            <span>ติดต่อสอบถาม Line</span>
-            <a id="lineLink" href="https://line.me/R/ti/p/@655ayoko" target="_blank" class="font-bold text-[#543B32] hover:underline">@655ayoko</a>
-        </div>
-    </main>
-
-    <!-- Modal เข้าสู่ระบบแอดมิน -->
-    <div id="loginModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl border-2 border-brand-yellow-soft relative">
-            <button onclick="closeModal('loginModal')" class="absolute top-4 right-4 text-brand-brown-light hover:text-brand-brown text-lg font-bold">✕</button>
-            <div class="text-center mb-5">
-                <div class="w-12 h-12 rounded-full bg-brand-yellow-soft mx-auto flex items-center justify-center text-xl mb-2">🔐</div>
-                <h3 class="text-lg font-bold text-brand-brown">เข้าสู่ระบบแอดมิน</h3>
-                <p class="text-xs text-brand-brown-light">เฉพาะเจ้าหน้าที่ดูแลระบบ JUMBOOSHOP</p>
-            </div>
-            <form onsubmit="handleLogin(event)" class="space-y-3.5">
-                <div>
-                    <label class="block text-xs font-semibold text-brand-brown mb-1">อีเมลแอดมิน</label>
-                    <input id="loginEmail" type="email" required placeholder="admin@jumboo.com" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8DCC4] text-xs focus:outline-none focus:border-brand-yellow">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-brand-brown mb-1">รหัสผ่าน</label>
-                    <input id="loginPassword" type="password" required placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-xl border border-[#E8DCC4] text-xs focus:outline-none focus:border-brand-yellow">
-                </div>
-                <button id="loginSubmitBtn" type="submit" class="w-full py-2.5 rounded-xl bg-brand-yellow text-white font-bold text-xs hover:bg-[#e0b450] transition shadow-md">
-                    เข้าสู่ระบบ
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal จัดการข้อมูลร้านค้า (Admin Dashboard) -->
-    <div id="adminModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border-2 border-brand-yellow-soft max-h-[90vh] overflow-y-auto relative">
-            <div class="flex justify-between items-center pb-4 mb-4 border-b border-[#FDF3D8]">
-                <div>
-                    <h3 class="text-lg font-bold text-brand-brown flex items-center gap-2">⚙️ จัดการข้อมูลร้านค้า</h3>
-                    <p class="text-[11px] text-brand-brown-light">ปรับแต่งข้อมูลหน้าร้าน JUMBOOSHOP</p>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="handleLogout()" class="text-xs text-red-500 hover:underline font-semibold">ออกจากระบบ</button>
-                    <button onclick="closeModal('adminModal')" class="text-brand-brown-light hover:text-brand-brown text-lg font-bold ml-2">✕</button>
-                </div>
-            </div>
-
-            <form onsubmit="handleSaveSettings(event)" class="space-y-4">
-                <!-- อัปโหลดรูปประจำร้าน -->
-                <div class="bg-[#FCF9F2] p-4 rounded-2xl border border-[#EBDCC4]">
-                    <label class="block text-xs font-bold text-brand-brown mb-2">รูปประจำร้าน (โปรไฟล์)</label>
-                    <div class="flex items-center gap-4">
-                        <div class="w-16 h-16 rounded-full bg-brand-yellow/30 overflow-hidden flex items-center justify-center border-2 border-brand-yellow shrink-0">
-                            <img id="adminLogoPreview" src="" alt="Preview" class="w-full h-full object-cover hidden">
-                            <span id="adminLogoPreviewText" class="text-xs text-brand-brown">ไม่มีรูป</span>
-                        </div>
-                        <div class="flex-1 space-y-1.5">
-                            <input type="file" id="logoFileInput" accept="image/*" onchange="handleFileSelect(event)" class="text-xs text-brand-brown-light file:mr-2 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-brand-yellow file:text-white hover:file:bg-[#e0b450]">
-                            <p class="text-[10px] text-brand-brown-light">รองรับไฟล์ JPG, PNG, WEBP ขนาดไม่เกิน 2MB</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ข้อมูลตัวหนังสือ -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-brand-brown mb-1">ชื่อร้าน</label>
-                        <input id="inputShopName" type="text" required class="w-full px-3 py-2 rounded-xl border border-[#E8DCC4] text-xs focus:outline-none focus:border-brand-yellow">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-brand-brown mb-1">คำโปรยใต้ชื่อร้าน</label>
-                        <input id="inputShopSub" type="text" class="w-full px-3 py-2 rounded-xl border border-[#E8DCC4] text-xs focus:outline-none focus:border-brand-yellow">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-brand-brown mb-1">ข้อความแนะนำตัว บรรทัดที่ 1</label>
-                    <input id="inputDesc1" type="text" class="w-full px-3 py-2 rounded-xl border border-[#E8DCC4] text-xs focus:outline-none focus:border-brand-yellow">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-brand-brown mb-1">ข้อความแนะนำตัว บรรทัดที่ 2</label>
-                    <input id="inputDesc2" type="text" class="w-full px-3 py-2 rounded-xl border border-[#E8DCC4] text-xs focus:outline-none focus:border-brand-yellow">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-brand-brown mb-1">เวลาทำการ / รอบจัดส่ง</label>
-                    <input id="inputHours" type="text" class="w-full px-3 py-2 rounded-xl border border-[#E8DCC4] text-xs focus:outline-none focus:border-brand-yellow">
-                </div>
-
-                <!-- ลิงก์ปุ่มเมนูทั้ง 4 -->
-                <div class="border-t border-[#FDF3D8] pt-3 space-y-2.5">
-                    <p class="text-xs font-bold text-brand-brown">🔗 ลิงก์ปลายทางของปุ่มเมนู</p>
-                    <div>
-                        <label class="block text-[11px] font-semibold text-brand-brown mb-0.5">1. วิธีสั่งซื้อ</label>
-                        <input id="inputBtnHowTo" type="url" placeholder="https://..." class="w-full px-3 py-1.5 rounded-lg border border-[#E8DCC4] text-xs focus:outline-none focus:border-brand-yellow">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-semibold text-brand-brown mb-0.5">2. สั่งซื้อ / เช็คคิว</label>
-                        <input id="inputBtnOrder" type="url" placeholder="https://..." class="w-full px-3 py-1.5 rounded-lg border border-[#E8DCC4] text-xs focus:outline-none focus:border-brand-yellow">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-semibold text-brand-brown mb-0.5">3. แจ้งโอนเงิน</label>
-                        <input id="inputBtnPayment" type="url" placeholder="https://..." class="w-full px-3 py-1.5 rounded-lg border border-[#E8DCC4] text-xs focus:outline-none focus:border-brand-yellow">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-semibold text-brand-brown mb-0.5">4. เช็คเครดิต / สะสมแต้ม</label>
-                        <input id="inputBtnCredit" type="url" placeholder="https://..." class="w-full px-3 py-1.5 rounded-lg border border-[#E8DCC4] text-xs focus:outline-none focus:border-brand-yellow">
-                    </div>
-                </div>
-
-                <!-- ช่องทางติดต่อ LINE -->
-                <div class="border-t border-[#FDF3D8] pt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-brand-brown mb-1">ข้อความ LINE</label>
-                        <input id="inputLineText" type="text" placeholder="@655ayoko" class="w-full px-3 py-2 rounded-xl border border-[#E8DCC4] text-xs focus:outline-none focus:border-brand-yellow">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-brand-brown mb-1">ลิงก์ LINE</label>
-                        <input id="inputLineUrl" type="url" placeholder="https://line.me/R/ti/p/@655ayoko" class="w-full px-3 py-2 rounded-xl border border-[#E8DCC4] text-xs focus:outline-none focus:border-brand-yellow">
-                    </div>
-                </div>
-
-                <div class="pt-4 flex gap-2">
-                    <button type="button" onclick="closeModal('adminModal')" class="w-1/3 py-2.5 rounded-xl border border-[#E8DCC4] text-xs font-semibold text-brand-brown hover:bg-gray-50">ยกเลิก</button>
-                    <button id="saveSettingsBtn" type="submit" class="w-2/3 py-2.5 rounded-xl bg-brand-yellow text-white text-xs font-bold hover:bg-[#e0b450] shadow-md transition">บันทึกข้อมูลหน้าร้าน</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- กล่องแจ้งเตือน Toast -->
-    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#543B32] text-white px-5 py-2.5 rounded-full text-xs font-semibold shadow-lg transition-all opacity-0 pointer-events-none z-50 flex items-center gap-2">
-        <span id="toastIcon">✨</span>
-        <span id="toastMsg">ข้อความ</span>
-    </div>
-
-    <!-- ไฟล์เสียงเพลง -->
-    <audio id="bgMusic" loop preload="auto">
-        <source src="Sunlight_On_The_Threshold.mp3" type="audio/mp3">
-    </audio>
-
-    <script>
-        const SUPABASE_URL = "https://jrfanayurvkidnrpfoqo.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpyZmFuYXl1cnZraWRucnBmb3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0MDI5ODQsImV4cCI6MjEwNTk3ODk4NH0.P7W3COXaplyt8_FwtgAebd_TVRVddzoeZtEJp1cb7Qw";
-
-        let supabase = null;
-        try {
-            if (window.supabase) {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            }
-        } catch (e) {
-            console.log("Supabase initial error:", e);
-        }
-
-        // ข้อมูลหลักของร้าน
-        let currentShopData = {
-            id: 1,
-            shop_name: "JUMBOOSHOP",
-            shop_sub: "ระบบแนะนำร้านค้าและสั่งซื้อสินค้า",
-            desc1: "สวัสดีค่าา ยินดีต้อนรับเข้าสู่ร้าน JUMBOOSHOP นะคะ 🐘✨",
-            desc2: "แม่ค้าชื่อ \"จัมโบ้\" ค่ะ ใจดี ถามได้ตลอดเลยน้า",
-            hours: "เปิดให้บริการทุกวัน | ตัดรอบส่งของ 15.00 น.",
-            logo: "",
-            btn_howto: "",
-            btn_order: "",
-            btn_payment: "",
-            btn_credit: "",
-            line_text: "@655ayoko",
-            line_url: "https://line.me/R/ti/p/@655ayoko"
-        };
-
-        let selectedLogoFile = null;
-
-        function showToast(msg, icon = "✨") {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMsg').textContent = msg;
-            document.getElementById('toastIcon').textContent = icon;
-            toast.classList.remove('opacity-0');
-            toast.classList.add('opacity-100');
-            setTimeout(() => {
-                toast.classList.remove('opacity-100');
-                toast.classList.add('opacity-0');
-            }, 3000);
-        }
-
-        function setButtonAction(id, url, title) {
-            const el = document.getElementById(id);
-            if (!url || url === '#' || url.trim() === '') {
-                el.href = "javascript:void(0);";
-                el.onclick = (e) => {
-                    e.preventDefault();
-                    showToast(`ปุ่ม "${title}" กำลังรอตั้งค่าลิงก์ในระบบแอดมินค่ะ 💖`, "📌");
-                };
-            } else {
-                el.href = url;
-                el.onclick = null;
-            }
-        }
-
-        function renderShopUI(data) {
-            document.getElementById('shopName').textContent = data.shop_name;
-            document.getElementById('shopSub').textContent = data.shop_sub;
-            document.getElementById('shopDesc1').textContent = data.desc1;
-            document.getElementById('shopDesc2').textContent = data.desc2;
-            document.getElementById('shopHours').textContent = data.hours;
-            
-            if (data.logo && data.logo.trim() !== "") {
-                const img = document.getElementById('shopLogo');
-                img.src = data.logo;
-                img.classList.remove('hidden');
-                document.getElementById('shopLogoFallback').classList.add('hidden');
-            } else {
-                fallbackLogo();
-            }
-
-            setButtonAction('btnHowTo', data.btn_howto, 'วิธีสั่งซื้อ');
-            setButtonAction('btnOrder', data.btn_order, 'สั่งซื้อ / เช็คคิว');
-            setButtonAction('btnPayment', data.btn_payment, 'แจ้งโอนเงิน');
-            setButtonAction('btnCredit', data.btn_credit, 'เช็คเครดิต / สะสมแต้ม');
-
-            if (data.line_text) document.getElementById('lineLink').textContent = data.line_text;
-            if (data.line_url) document.getElementById('lineLink').href = data.line_url;
-        }
-
-        function fallbackLogo() {
-            document.getElementById('shopLogo').classList.add('hidden');
-            document.getElementById('shopLogoFallback').classList.remove('hidden');
-        }
-
-        // ดึงข้อมูลจากฐานข้อมูล Supabase
-        async function fetchShopData() {
-            renderShopUI(currentShopData);
-
-            if (!supabase) return;
-
-            try {
-                const { data, error } = await supabase
-                    .from('shop_settings')
-                    .select('*')
-                    .limit(1)
-                    .maybeSingle();
-
-                if (!error && data) {
-                    currentShopData = {
-                        id: data.id || 1,
-                        shop_name: data.shop_name || currentShopData.shop_name,
-                        shop_sub: data.shop_sub || currentShopData.shop_sub,
-                        desc1: data.welcome_message || currentShopData.desc1,
-                        desc2: data.about_message || currentShopData.desc2,
-                        hours: data.business_hours || currentShopData.hours,
-                        logo: data.shop_image || "",
-                        btn_howto: data.btn_howto_link || "",
-                        btn_order: data.btn_order_link || "",
-                        btn_payment: data.btn_payment_link || "",
-                        btn_credit: data.btn_credit_link || "",
-                        line_text: data.line_contact || currentShopData.line_text,
-                        line_url: data.line_link || currentShopData.line_url
-                    };
-                    renderShopUI(currentShopData);
-                }
-            } catch (err) {
-                console.warn("Fetch fallback used:", err);
-            }
-        }
-
-        // จัดการ Modal
-        function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
-
-        // ตรวจสอบสิทธิ์เมื่อกดปุ่มจัดการร้าน
-        async function handleAdminClick() {
-            if (!supabase) {
-                populateAdminForm();
-                openModal('adminModal');
-                return;
-            }
-
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
-                openModal('loginModal');
-                return;
-            }
-
-            try {
-                const { data: isAdmin, error } = await supabase.rpc('is_admin');
-                if (error || !isAdmin) {
-                    showToast("บัญชีนี้ไม่มีสิทธิ์แอดมินค่ะ ❌", "🔒");
-                    return;
-                }
-                populateAdminForm();
-                openModal('adminModal');
-            } catch (e) {
-                populateAdminForm();
-                openModal('adminModal');
-            }
-        }
-
-        // เข้าสู่ระบบแอดมิน
-        async function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            const btn = document.getElementById('loginSubmitBtn');
-
-            btn.disabled = true;
-            btn.textContent = "กำลังตรวจสอบ...";
-
-            try {
-                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-                if (error) throw error;
-
-                const { data: isAdmin } = await supabase.rpc('is_admin');
-                if (!isAdmin) {
-                    await supabase.auth.signOut();
-                    showToast("บัญชีนี้ไม่ได้รับสิทธิ์แอดมินค่ะ", "❌");
-                    return;
-                }
-
-                showToast("เข้าสู่ระบบสำเร็จแล้วค่ะ 🎉", "✅");
-                closeModal('loginModal');
-                populateAdminForm();
-                openModal('adminModal');
-            } catch (err) {
-                showToast("เข้าสู่ระบบไม่สำเร็จ: " + (err.message || "รหัสไม่ถูกต้อง"), "⚠️");
-            } finally {
-                btn.disabled = false;
-                btn.textContent = "เข้าสู่ระบบ";
-            }
-        }
-
-        async function handleLogout() {
-            if (supabase) await supabase.auth.signOut();
-            closeModal('adminModal');
-            showToast("ออกจากระบบเรียบร้อยแล้วค่ะ", "👋");
-        }
-
-        function populateAdminForm() {
-            document.getElementById('inputShopName').value = currentShopData.shop_name;
-            document.getElementById('inputShopSub').value = currentShopData.shop_sub;
-            document.getElementById('inputDesc1').value = currentShopData.desc1;
-            document.getElementById('inputDesc2').value = currentShopData.desc2;
-            document.getElementById('inputHours').value = currentShopData.hours;
-            document.getElementById('inputBtnHowTo').value = currentShopData.btn_howto;
-            document.getElementById('inputBtnOrder').value = currentShopData.btn_order;
-            document.getElementById('inputBtnPayment').value = currentShopData.btn_payment;
-            document.getElementById('inputBtnCredit').value = currentShopData.btn_credit;
-            document.getElementById('inputLineText').value = currentShopData.line_text;
-            document.getElementById('inputLineUrl').value = currentShopData.line_url;
-
-            const preview = document.getElementById('adminLogoPreview');
-            const previewText = document.getElementById('adminLogoPreviewText');
-            if (currentShopData.logo) {
-                preview.src = currentShopData.logo;
-                preview.classList.remove('hidden');
-                previewText.classList.add('hidden');
-            } else {
-                preview.classList.add('hidden');
-                previewText.classList.remove('hidden');
-            }
-        }
-
-        function handleFileSelect(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            if (file.size > 2 * 1024 * 1024) {
-                showToast("ขนาดรูปภาพต้องไม่เกิน 2MB ค่ะ", "⚠️");
-                e.target.value = "";
-                return;
-            }
-
-            selectedLogoFile = file;
-            const preview = document.getElementById('adminLogoPreview');
-            const previewText = document.getElementById('adminLogoPreviewText');
-            preview.src = URL.createObjectURL(file);
-            preview.classList.remove('hidden');
-            previewText.classList.add('hidden');
-        }
-
-        // บันทึกการตั้งค่าลง Supabase
-        async function handleSaveSettings(e) {
-            e.preventDefault();
-            const btn = document.getElementById('saveSettingsBtn');
-            btn.disabled = true;
-            btn.textContent = "กำลังบันทึกข้อมูล...";
-
-            try {
-                let logoUrl = currentShopData.logo;
-
-                // อัปโหลดรูปขึ้น Storage หากมีการเลือกรูปใหม่
-                if (selectedLogoFile && supabase) {
-                    const ext = selectedLogoFile.name.split('.').pop();
-                    const fileName = `logo_${Date.now()}.${ext}`;
-                    const { error: uploadError } = await supabase.storage
-                        .from('shop-assets')
-                        .upload(fileName, selectedLogoFile, { upsert: true });
-
-                    if (!uploadError) {
-                        const { data: publicUrlData } = supabase.storage
-                            .from('shop-assets')
-                            .getPublicUrl(fileName);
-                        logoUrl = publicUrlData.publicUrl;
-                    }
-                }
-
-                const updatedData = {
-                    shop_name: document.getElementById('inputShopName').value.trim(),
-                    shop_sub: document.getElementById('inputShopSub').value.trim(),
-                    welcome_message: document.getElementById('inputDesc1').value.trim(),
-                    about_message: document.getElementById('inputDesc2').value.trim(),
-                    business_hours: document.getElementById('inputHours').value.trim(),
-                    shop_image: logoUrl,
-                    btn_howto_link: document.getElementById('inputBtnHowTo').value.trim(),
-                    btn_order_link: document.getElementById('inputBtnOrder').value.trim(),
-                    btn_payment_link: document.getElementById('inputBtnPayment').value.trim(),
-                    btn_credit_link: document.getElementById('inputBtnCredit').value.trim(),
-                    line_contact: document.getElementById('inputLineText').value.trim(),
-                    line_link: document.getElementById('inputLineUrl').value.trim(),
-                    updated_at: new Date().toISOString()
-                };
-
-                if (supabase) {
-                    const { error } = await supabase
-                        .from('shop_settings')
-                        .upsert({ id: currentShopData.id || 1, ...updatedData });
-
-                    if (error) throw error;
-                }
-
-                // อัปเดตข้อมูลบนหน้าจอทันที
-                currentShopData = {
-                    ...currentShopData,
-                    shop_name: updatedData.shop_name,
-                    shop_sub: updatedData.shop_sub,
-                    desc1: updatedData.welcome_message,
-                    desc2: updatedData.about_message,
-                    hours: updatedData.business_hours,
-                    logo: updatedData.shop_image,
-                    btn_howto: updatedData.btn_howto_link,
-                    btn_order: updatedData.btn_order_link,
-                    btn_payment: updatedData.btn_payment_link,
-                    btn_credit: updatedData.btn_credit_link,
-                    line_text: updatedData.line_contact,
-                    line_url: updatedData.line_link
-                };
-
-                renderShopUI(currentShopData);
-                closeModal('adminModal');
-                showToast("บันทึกข้อมูลหน้าร้านเรียบร้อยแล้วค่ะ 💖", "✅");
-            } catch (err) {
-                showToast("บันทึกล้มเหลว: " + (err.message || "เกิดข้อผิดพลาด"), "❌");
-            } finally {
-                btn.disabled = false;
-                btn.textContent = "บันทึกข้อมูลหน้าร้าน";
-            }
-        }
-
-        // ระบบเล่นเพลง
-        let isPlaying = false;
-        function toggleAudio() {
-            const audio = document.getElementById('bgMusic');
-            const icon = document.getElementById('audioIcon');
-            const text = document.getElementById('audioText');
-
-            if (!isPlaying) {
-                audio.play().then(() => {
-                    isPlaying = true;
-                    icon.textContent = "🔊";
-                    text.textContent = "ปิดเพลง";
-                    showToast("กำลังเล่นเพลง Sunlight On The Threshold 🎶", "🎵");
-                }).catch(err => {
-                    showToast("แตะที่หน้าจออีก 1 ครั้งเพื่อเล่นเพลงนะคะ", "🎶");
-                });
-            } else {
-                audio.pause();
-                isPlaying = false;
-                icon.textContent = "🔈";
-                text.textContent = "เปิดเพลง";
-                showToast("ปิดเพลงเรียบร้อยค่ะ", "🔇");
-            }
-        }
-
-        // เอฟเฟกต์หิมะตกแต่ง
-        function initSnow() {
-            const symbols = ['✦', '•', '+', '★', '✿'];
-            setInterval(() => {
-                const snow = document.createElement('div');
-                snow.className = 'snow-particle text-[#F4C760] font-bold opacity-60';
-                snow.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-                snow.style.left = Math.random() * 100 + 'vw';
-                snow.style.fontSize = (Math.random() * 8 + 8) + 'px';
-                snow.style.animationDuration = (Math.random() * 4 + 4) + 's';
-                document.body.appendChild(snow);
-                setTimeout(() => snow.remove(), 8000);
-            }, 700);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchShopData();
-            initSnow();
-        });
-    </script>
-</body>
-</html>
+    <!-- Header bar -->
+    <header class="w-full max-w-lg flex justify-end items-center relative z-20 mb-2">
+        <button id="adminBtn" type="button" class="group flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/90 border border-yellow-earth/40 text-brown-dark text-xs font-semibold hover:bg-yellow-earth hover:text-white transition-all shadow-sm">
+            <svg class="w-3.5 h-3.5 transition-transform group-hover:rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-
